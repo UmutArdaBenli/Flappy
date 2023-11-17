@@ -12,7 +12,7 @@ public class Al {
     long device = alcOpenDevice((ByteBuffer)null);
     ALCCapabilities deviceCaps = ALC.createCapabilities(device);
 
-    long context = alcCreateContext(device, (ByteBuffer)null);
+    //long context = alcCreateContext(device, (ByteBuffer)null);
 
 
 
