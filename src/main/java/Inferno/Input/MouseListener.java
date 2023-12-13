@@ -1,4 +1,4 @@
-package Inferno;
+package Inferno.Input;
 
 import static org.lwjgl.glfw.GLFW.*;
 

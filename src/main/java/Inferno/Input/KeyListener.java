@@ -1,6 +1,4 @@
-package Inferno;
-
-import java.security.Key;
+package Inferno.Input;
 
 import static org.lwjgl.glfw.GLFW.GLFW_PRESS;
 import static org.lwjgl.glfw.GLFW.GLFW_RELEASE;

@@ -1,9 +1,14 @@
 package Inferno;
 
+import Inferno.Input.KeyListener;
+import Inferno.Input.MouseListener;
+import Inferno.audio.Al;
 import org.lwjgl.Version;
 import org.lwjgl.glfw.GLFWErrorCallback;
+import org.lwjgl.glfw.GLFWImage;
 import org.lwjgl.opengl.GL;
 import util.Time;
+import util.imageParser;
 
 import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
 import static org.lwjgl.glfw.GLFW.*;
@@ -19,11 +24,16 @@ public class Window {
     private static Scene currentScene;
 
     public float r,g,b,a = 1;
+    private final imageParser appIcon = imageParser.load_image("Assets/icon.png");
+    public float dt;
+
     private Window(){
         this.width = 1280;
         this.height = 720;
-        this.title = "3d TEST";
+        this.title = "MysticForge: Minecraft";
     }
+
+
 
     public static void changeScene(int newScene){
         switch (newScene) {
@@ -45,7 +55,6 @@ public class Window {
         if(Window.window == null){
             Window.window = new Window();
         }
-
         return window;
     }
 
@@ -53,11 +62,9 @@ public class Window {
         System.out.println("Hello LWJGL " + Version.getVersion() + "!");
         init();
         loop();
-
         //free memory
         glfwFreeCallbacks(glfwWindow);
         glfwDestroyWindow(glfwWindow);
-
         //terminate GLFW and free the error callback
         glfwTerminate();
         glfwSetErrorCallback(null).free();
@@ -65,8 +72,9 @@ public class Window {
 
 
     public void init() {
+        Al.init();
+        //setup an error callback
         GLFWErrorCallback.createPrint(System.err).set();
-
         //initialize GLFW
         if(!glfwInit()){
             throw new IllegalStateException("Unable to initialize GLFW");
@@ -84,15 +92,20 @@ public class Window {
             throw new IllegalStateException("Failed to create the GLFW window.");
         }
 
-        glfwSetCursorPosCallback(glfwWindow,MouseListener::mousePosCallback);
+        glfwSetCursorPosCallback(glfwWindow, MouseListener::mousePosCallback);
         glfwSetMouseButtonCallback(glfwWindow,MouseListener::mouseButtonCallback);
         glfwSetScrollCallback(glfwWindow, MouseListener::mouseScrollCallback);
-        glfwSetKeyCallback(glfwWindow,KeyListener::KeyCallback);
+        glfwSetKeyCallback(glfwWindow, KeyListener::KeyCallback);
         // Make the OpenGL context current.
         glfwMakeContextCurrent(glfwWindow);
         // Enable VSync
         glfwSwapInterval(0);
+        // set the window icon
+        GLFWImage image = GLFWImage.malloc(); GLFWImage.Buffer imagebf = GLFWImage.malloc(1);
+        image.set(appIcon.get_width(), appIcon.get_heigh(), appIcon.get_image());
+        imagebf.put(0, image);
 
+        glfwSetWindowIcon(glfwWindow, imagebf);
         // Make the window visible
         glfwShowWindow(glfwWindow);
 
@@ -103,13 +116,13 @@ public class Window {
     public void loop() {
         float beginTime = Time.getTime();
         float endTime = Time.getTime();
-        float dt = -1.0f;
+        dt = -1.0f;
 
         while(!glfwWindowShouldClose(glfwWindow)){
             //Poll events
             glfwPollEvents();
             glClearColor(r,g,b,1.0f);
-            glClear(GL_COLOR_BUFFER_BIT);
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
             if(dt >= 0) {
                 currentScene.update(dt);
