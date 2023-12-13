@@ -36,8 +36,10 @@ public class Batch {
     }
     private void prepareBatching(){
         this.modelMatrix = new Matrix4f().identity(); // create a model matrix and translate it by the position
+
         List<Float> verticesList = new ArrayList<>();
         List<Integer> indicesList = new ArrayList<>();
+
         for (Grass grass : grassList) {
             Vector3f position = grass.getPosition();
             float[] cubeVertices = grass.getVertices();
@@ -52,7 +54,9 @@ public class Batch {
                 indicesList.add(index + vertexOffset);
             }
         }
+
         this.vertices = new float[verticesList.size()];
+
         for (int i = 0; i < verticesList.size(); i++) {
             this.vertices[i] = verticesList.get(i);
         }

@@ -83,11 +83,6 @@ public class Grass extends Block{
         float b = (float)Math.random();
         this.color = new Vector3f(r,g,b);
     }
-    /**
-     * This method is used to update the Grass object.
-     *
-     * @param dt The time difference since the last update in seconds.
-     */
     public float[] getVertices() {
         return vertices;
     }

@@ -28,7 +28,7 @@ public class LevelEditorScene extends Scene{
     public static Shader MainShader = new Shader("Assets/Shaders/default.glsl");
     private float pitch = 0.0f;
     private float yaw = 0.0f;
-    private float playerSpeed = 5.0f;
+    private float playerSpeed = 10f;
     private List<Chunk> chunkList = new ArrayList<>();
     private boolean wireframe = false;
 
@@ -36,15 +36,15 @@ public class LevelEditorScene extends Scene{
         MainShader.compile();
         System.out.println("Inside Level Editor scene");
         Window.get().r = 0f;
-        Window.get().g = 0;
-        Window.get().b = 0;
+        Window.get().g = 1;
+        Window.get().b = 1;
     }
 
     @Override
     public void Init() {
         // ========== INITIALIZING AUDIO ============
-        int sound = Al.createBuffer("Assets/Sounds/gaza.mp3");
-        Al.playSound(sound);
+        //int sound = Al.createBuffer("Assets/Sounds/gaza.mp3");
+        //Al.playSound(sound);
 
         // ========= SETTING UP SHADERS =============
         // Model Matrix
@@ -62,16 +62,9 @@ public class LevelEditorScene extends Scene{
         // Projection Matrix
         projection = new Matrix4f();
         projection.perspective((float) Math.toRadians(fov),
-                /* Aspect ratio */ 1280f / 720f,
+                /* Aspect ratio */ Window.get().width / Window.get().height,
                 0.1f,
-                100.0f);
-
-        // Pass matrices to the shader
-
-        // ======= CONFIGURING OPENGL CONTEXT ========
-        glViewport(0, 0, 1280, 720);
-
-        glShadeModel(GL_FLAT);
+                1000.0f);
         // ======= Creating Chunks ========
         chunkList.add(new Chunk());
     }
@@ -121,16 +114,16 @@ public class LevelEditorScene extends Scene{
             cameraTarget.y -= playerSpeed * dt;
         }
         if (KeyListener.isKeyPressed(KeyEvent.VK_I)) {
-            pitch += 5 * dt; // pitch up
+            pitch += 2 * dt; // pitch up
         }
         if (KeyListener.isKeyPressed(KeyEvent.VK_K)) {
-            pitch -= 5 * dt; // pitch down
+            pitch -= 2 * dt; // pitch down
         }
         if (KeyListener.isKeyPressed(KeyEvent.VK_J)) {
-            yaw -= 5 * dt; // yaw left
+            yaw -= 2 * dt; // yaw left
         }
         if (KeyListener.isKeyPressed(KeyEvent.VK_L)) {
-            yaw += 5 * dt; // yaw right
+            yaw += 2 * dt; // yaw right
         }
         cameraTarget.x = cameraPos.x + (float)Math.cos(yaw);
         cameraTarget.y = cameraPos.y + (float)Math.tan(pitch);

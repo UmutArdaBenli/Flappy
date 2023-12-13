@@ -2,7 +2,6 @@ package Inferno;
 
 import Inferno.Input.KeyListener;
 import Inferno.Input.MouseListener;
-import Inferno.audio.Al;
 import org.lwjgl.Version;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWImage;
@@ -72,9 +71,8 @@ public class Window {
 
 
     public void init() {
-        Al.init();
-        //setup an error callback
         GLFWErrorCallback.createPrint(System.err).set();
+
         //initialize GLFW
         if(!glfwInit()){
             throw new IllegalStateException("Unable to initialize GLFW");
@@ -91,6 +89,14 @@ public class Window {
         if (glfwWindow == NULL) {
             throw new IllegalStateException("Failed to create the GLFW window.");
         }
+        // ======= CONFIGURING GLFW CONTEXT ========
+        glfwSetFramebufferSizeCallback(glfwWindow, (window, newWidth, newHeight) -> {
+            // update your viewport with the new dimensions
+            glViewport(0, 0, newWidth, newHeight);
+            // update width and height variables with new values
+            this.width = newWidth;
+            this.height = newHeight;
+        });
 
         glfwSetCursorPosCallback(glfwWindow, MouseListener::mousePosCallback);
         glfwSetMouseButtonCallback(glfwWindow,MouseListener::mouseButtonCallback);
@@ -100,7 +106,8 @@ public class Window {
         glfwMakeContextCurrent(glfwWindow);
         // Enable VSync
         glfwSwapInterval(0);
-        // set the window icon
+        // set flat faces
+
         GLFWImage image = GLFWImage.malloc(); GLFWImage.Buffer imagebf = GLFWImage.malloc(1);
         image.set(appIcon.get_width(), appIcon.get_heigh(), appIcon.get_image());
         imagebf.put(0, image);
@@ -108,8 +115,11 @@ public class Window {
         glfwSetWindowIcon(glfwWindow, imagebf);
         // Make the window visible
         glfwShowWindow(glfwWindow);
-
         GL.createCapabilities();
+
+        glEnable(GL_LIGHTING);
+        glShadeModel(GL_SMOOTH);
+        glEnable(GL_NORMALIZE);
         Window.changeScene(0);
     }
 
